@@ -1,5 +1,7 @@
 import pyspark.sql.functions as F
 from pyspark.sql import SparkSession
+from functools import reduce  # For Python 3.x
+from pyspark.sql import DataFrame
 
 
 def create_spark_session(master_url, packages=None):
@@ -31,17 +33,16 @@ def create_spark_session(master_url, packages=None):
 
 
 def read_csv_spark(spark, file_path):
-    """
-    :param spark:
-    :param file_path:
-    :return:
-    """
     df = (
         spark.read.format("com.databricks.spark.csv")
             .options(header="true", inferSchema="true")
             .load(file_path)
     )
     return df
+
+
+def unionAll(dfs):
+    return reduce(DataFrame.union, dfs)
 
 
 def spark_date_parsing(df, date_column, date_format):
