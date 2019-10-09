@@ -2,6 +2,8 @@ import pyspark.sql.functions as F
 from pyspark.sql import SparkSession
 from functools import reduce  # For Python 3.x
 from pyspark.sql import DataFrame
+from pyspark.sql.functions import isnan, when, count, countDistinct, col, isnull
+import json
 
 
 def create_spark_session(master_url, packages=None):
@@ -226,3 +228,11 @@ def find_date_range(df, date_column):
         dates["max(" + date_column + ")"],
     )
     return min_date, max_date
+
+
+def null_values(df):
+    schema = {col: col_type for col, col_type in df.dtypes}
+    nulls = [json.loads(x) for x in df.select(
+        [count(when(isnull(c), c)).alias(c) for c, type in schema.items() if type != "timestamp"]
+    ).toJSON().collect()][0]
+    return nulls
