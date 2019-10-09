@@ -24,6 +24,7 @@ backblaze
 │   ├── 2019-04-01.csv
 │   ├── 2019-04-02.csv
 """
+# Remove any hidden folders
 backblaze = [os.path.join(main_dir, x) for x in os.listdir(main_dir) if '.' not in x]
 
 dfs = list(map(read_csv_folder_spark, backblaze))
