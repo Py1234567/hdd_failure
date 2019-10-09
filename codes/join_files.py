@@ -1,7 +1,6 @@
 import os
 
-from codes.utils import create_spark_session
-from codes.utils import unionAll
+from codes.utils import create_spark_session, unionAll, null_values
 
 
 # Edited to take only one argument, so that it can be mapped to the list of folders
@@ -30,6 +29,17 @@ backblaze = [os.path.join(main_dir, x) for x in os.listdir(main_dir) if '.' not 
 dfs = list(map(read_csv_folder_spark, backblaze))
 
 final_df = unionAll(dfs)
+
+n_rows = final_df.count()
+
+count_nulls = null_values(final_df)
+
+too_many_nulls = [
+    x for (x, y) in count_nulls.items() if y > (0.8 * n_rows)
+]
+
+dropped_nulls_df = final_df.drop(*too_many_nulls)
+
 
 # final_df.coalesce(1).write.format('com.databricks.spark.csv').option("header", "true").save("final_data/hdd_data.csv")
 # Write another compressed file for quick read
