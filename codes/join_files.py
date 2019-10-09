@@ -40,7 +40,6 @@ too_many_nulls = [
 
 dropped_nulls_df = final_df.drop(*too_many_nulls)
 
-
 # final_df.coalesce(1).write.format('com.databricks.spark.csv').option("header", "true").save("final_data/hdd_data.csv")
 # Write another compressed file for quick read
-final_df.write.parquet("final_data/hdd_data.parquet")
+dropped_nulls_df.write.parquet("final_data/hdd_data.parquet")
