@@ -31,6 +31,6 @@ dfs = list(map(read_csv_folder_spark, backblaze))
 
 final_df = unionAll(dfs)
 
-final_df.coalesce(1).write.format('com.databricks.spark.csv').option("header", "true").save("final_data/hdd_data.csv")
+# final_df.coalesce(1).write.format('com.databricks.spark.csv').option("header", "true").save("final_data/hdd_data.csv")
 # Write another compressed file for quick read
-final_df.write.parquet.save("final_data/hdd_data.parquet")
+final_df.write.parquet("final_data/hdd_data.parquet")
