@@ -35,7 +35,7 @@ n_rows = final_df.count()
 count_nulls = null_values(final_df)
 
 too_many_nulls = [
-    x for (x, y) in count_nulls.items() if y > (0.8 * n_rows)
+    x for (x, y) in count_nulls.items() if y > (0.4 * n_rows)
 ]
 
 dropped_nulls_df = final_df.drop(*too_many_nulls)
